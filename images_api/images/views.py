@@ -3,7 +3,8 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, ListModelMixin
+from rest_framework.viewsets import GenericViewSet
 
 from images_api.images.models import Image
 from images_api.images.serializers import ImageCreateSerializer, ImageRetrieveSerializer
@@ -26,7 +27,9 @@ class ImageFilterset(FilterSet):
         ]
 
 
-class ImageModelViewSet(ModelViewSet):
+class ImageModelViewSet(
+    GenericViewSet, CreateModelMixin, RetrieveModelMixin, ListModelMixin
+):
     queryset = Image.objects.all()
     serializer_class = ImageRetrieveSerializer
     pagination_class = ImagePagination
