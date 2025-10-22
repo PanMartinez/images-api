@@ -1,10 +1,13 @@
 from django_filters import FilterSet, filters
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from images_api.images.models import Image
 from images_api.images.serializers import ImageCreateSerializer, ImageRetrieveSerializer
+from images_api.images.utils import resize_image
 
 
 class ImagePagination(PageNumberPagination):
@@ -42,4 +45,21 @@ class ImageModelViewSet(ModelViewSet):
         description="Endpoint to upload image, and resize it based on dimensions provided in the request.",
     )
     def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        width = serializer.validated_data.get("width")
+        height = serializer.validated_data.get("height")
+        image_file = serializer.validated_data.get("image_file")
+
+        resized_image = resize_image(image_file, width, height)
+        image_instance = Image.objects.create(
+            image_file=resized_image,
+            width=width,
+            height=height,
+        )
+
+        output_serializer = ImageRetrieveSerializer(
+            image_instance, context={"request": request}
+        )
+        return Response(output_serializer.data, status=status.HTTP_201_CREATED)
