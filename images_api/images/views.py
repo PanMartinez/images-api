@@ -1,9 +1,10 @@
 from django_filters import FilterSet, filters
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, ListModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, ListModelMixin
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.viewsets import GenericViewSet
 
 from images_api.images.models import Image
@@ -35,6 +36,7 @@ class ImageModelViewSet(
     pagination_class = ImagePagination
     filterset_class = ImageFilterset
     search_fields = ["title"]
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_serializer_class(self):
         if self.action in ["create"]:

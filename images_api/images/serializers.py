@@ -19,7 +19,7 @@ class ImageRetrieveSerializer(serializers.ModelSerializer):
         fields = ["id", "url", "title", "width", "height"]
         read_only_fields = ["id", "url", "title", "width", "height"]
 
-    def get_url(self, obj):
+    def get_url(self, obj: Image) -> str | None:
         if obj.image_file:
             request = self.context.get("request")
             if request is not None:

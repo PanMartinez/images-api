@@ -3,10 +3,10 @@ from PIL import Image
 from django.core.files.base import ContentFile
 
 
-def resize_image(image_field, width, height):
+def resize_image(image_field, width: int, height: int) -> ContentFile:
     image = Image.open(image_field)
 
-    # We need to convert image to RGB in case of PNG with transparency
+    # We need to convert an image to RGB in case of PNG with transparency
     if image.mode not in ("RGB", "RGBA"):
         image = image.convert("RGB")
 
