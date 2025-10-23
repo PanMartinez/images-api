@@ -46,6 +46,10 @@ request to `/api/images/`.
 ## Contributing
 Contributions are welcome! Please submit a pull request with your changes.
 
+Application uses poetry for dependency management. To install dependencies, run `poetry install`.
+
+If you want to add a new dependency, update `pyproject.toml` and run `poetry update`.
+
 Application uses pre-commit hooks. Before committing anything, run `pre-commit install` to install them.
 
 ---
